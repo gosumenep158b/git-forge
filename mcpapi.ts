@@ -276,9 +276,10 @@ export function handleMcp(forge: Forge, ctx: Ctx, sessions: Set<string>): Reply 
     case 'notifications/initialized':
       return { status: 202, body: Buffer.alloc(0), headers };
     case 'tools/list': {
-      // Same envelope shape as every other JSON-RPC answer, byte-stable across calls.
-      const body2 = Buffer.from(JSON.stringify({ jsonrpc: '2.0', id, result: JSON.parse(TOOLS_LIST_RESULT) }));
-      return { status: 200, headers: { 'content-type': 'application/json; charset=utf-8', ...headers }, body: body2 };
+      // Same JSON-RPC envelope as every other answer; the tools array text is cached, so two
+      // calls with the same id answer byte-identical bodies.
+      const text = `{"jsonrpc":"2.0","id":${JSON.stringify(id)},"result":{"tools":${TOOLS_ARRAY_JSON}}}`;
+      return { status: 200, headers: { 'content-type': 'application/json; charset=utf-8', ...headers }, body: Buffer.from(text) };
     }
     case 'tools/call': {
       const params = (request.params ?? {}) as Json;
