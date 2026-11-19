@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="color-scheme" content="light dark"/>
+<link rel="icon" href="data:,"/>
+<title>Dashboard Agent Make.fun</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f5f1; --surface:#ffffff; --surface2:#eef0ea; --line:#dde1d8; --line2:#e8ebe3;
+  --text:#101613; --muted:#5b6b60; --muted2:#7a8a7f;
+  --green:#0f766e; --green-bg:#e6f4f1; --green-dot:#10b981;
+  --amber:#b45309; --amber-bg:#fef3c7; --amber-line:#fde68a;
+  --red:#b91c1c; --red-bg:#fef2f2;
+  --blue:#1d4ed8; --blue-bg:#eff6ff;
+  --radius:16px; --radius-sm:12px;
+  --shadow:0 1px 3px rgba(16,22,19,.06),0 8px 24px rgba(16,22,19,.04);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0b100e; --surface:#131a16; --surface2:#1a231e; --line:#24302a; --line2:#1e2a24;
+    --text:#eef3ef; --muted:#9aaca0; --muted2:#7d8f83;
+    --green:#2dd4bf; --green-bg:#0f2e2a; --green-dot:#34d399;
+    --amber:#fbbf24; --amber-bg:#2a2110; --amber-line:#453614;
+    --red:#f87171; --red-bg:#2b1414;
+    --blue:#60a5fa; --blue-bg:#17233d;
+    --shadow:0 1px 3px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Plus Jakarta Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--green);text-decoration:none}
+button,[role="button"]{min-height:36px}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:20px 18px 40px}
+@media(min-width:760px){.wrap{padding:28px 24px 56px}}
+
+/* top meta */
+.topmeta{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:16px}
+.live-badge{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:12.5px;font-weight:600}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--green-dot);box-shadow:0 0 0 4px var(--green-bg);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@media(prefers-reduced-motion:reduce){.live-dot{animation:none}}
+.snapshot{font-size:12.5px;color:var(--muted)}
+.snapshot b{color:var(--text)}
+
+/* hero */
+.hero{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+.hero::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--green)}
+.hero-top{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:flex-start}
+.hero h1{font-size:28px;line-height:1.05;letter-spacing:-.03em;margin:0;font-weight:800}
+@media(min-width:760px){.hero h1{font-size:36px}}
+.hero h1 span{color:var(--green)}
+.hero p{margin:8px 0 0;color:var(--muted);max-width:620px;font-size:14.5px;line-height:1.6}
+.account-chip{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;min-width:0;width:100%}
+@media(min-width:760px){.account-chip{width:auto;min-width:300px}}
+.account-chip strong{word-break:break-all}
+.avatar{width:42px;height:42px;border-radius:10px;background:#101613;color:#fff;display:grid;place-items:center;font-weight:800;font-size:15px;flex-shrink:0}
+@media(prefers-color-scheme:dark){.avatar{background:#e6f4f1;color:#0b100e}}
+.account-chip strong{display:block;font-size:14px;line-height:1.2}
+.account-chip small{color:var(--muted);font-size:12px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 8px;border-radius:999px}
+.pill-green{background:var(--green-bg);color:var(--green);border:1px solid color-mix(in srgb,var(--green) 25%,transparent)}
+.pill-amber{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-line)}
+
+/* kpi */
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+@media(min-width:760px){.kpis{grid-template-columns:1.35fr .9fr .9fr .9fr .9fr}}
+@media(max-width:759px){.kpis .kpi:last-child{grid-column:span 2}}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+.kpi label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
+.kpi strong{font-size:22px;line-height:1;letter-spacing:-.02em;display:block}
+.kpi strong.mono{font-size:20px}
+.kpi p{margin:6px 0 0;font-size:12.5px;color:var(--muted);line-height:1.45}
+.countdown{display:flex;gap:6px;margin-top:8px}
+.cd-box{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 4px;text-align:center}
+.cd-box b{font-family:"JetBrains Mono",monospace;font-size:18px;display:block;line-height:1}
+.cd-box span{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.cd-box.urgent{border-color:var(--amber-line);background:var(--amber-bg)}
+
+/* layout */
+.grid2{display:grid;gap:14px;margin-top:14px}
+@media(min-width:860px){.grid2{grid-template-columns:1fr 1.15fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+.card h2{font-size:15px;margin:0;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.card h2 i{width:28px;height:28px;border-radius:8px;background:var(--surface2);border:1px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:14px;flex-shrink:0}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
+.card-head p{margin:4px 0 0;font-size:13px;color:var(--muted)}
+.kv{display:grid;grid-template-columns:118px 1fr;gap:8px 12px;font-size:13.5px}
+.kv dt{color:var(--muted);font-weight:500}
+.kv dd{margin:0;font-weight:600;word-break:break-word}
+.kv dd.mono{font-weight:600;font-size:13px}
+.perms{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.perm{font-size:12px;font-weight:600;background:var(--surface2);border:1px solid var(--line);padding:5px 9px;border-radius:999px}
+.bounty-code{font-family:"JetBrains Mono",monospace;font-size:12px;background:var(--bg);border:1px dashed var(--line);padding:8px 10px;border-radius:10px;margin-top:12px;word-break:break-all;color:var(--muted)}
+.bounty-code b{color:var(--text)}
+
+/* section title */
+.section{margin-top:26px}
+.section-head{display:flex;flex-wrap:wrap;gap:12px;align-items:end;justify-content:space-between;margin-bottom:12px}
+.section-head h2{font-size:19px;letter-spacing:-.02em;margin:0;line-height:1.1}
+.section-head p{margin:4px 0 0;color:var(--muted);font-size:13.5px}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filter-btn{border:1px solid var(--line);background:var(--surface);color:var(--muted);padding:8px 12px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.filter-btn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
+
+/* agents */
+.agents{display:grid;gap:12px}
+@media(min-width:700px){.agents{grid-template-columns:1fr 1fr}}
+@media(min-width:980px){.agents{grid-template-columns:1fr 1fr 1fr}}
+.agent{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.agent.coordinator{border-color:color-mix(in srgb,var(--green) 35%,var(--line));background:linear-gradient(180deg,var(--green-bg),var(--surface) 55%)}
+@media(min-width:980px){.agent.coordinator{grid-column:span 1}}
+.agent-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.agent-role{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.agent h3{margin:4px 0 0;font-size:15.5px;line-height:1.25;letter-spacing:-.01em}
+.agent p{margin:8px 0 0;font-size:13px;color:var(--muted);line-height:1.55;flex:1}
+.agent-meta{margin-top:12px;padding-top:12px;border-top:1px solid var(--line2);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.agent-meta small{font-size:12px;color:var(--muted)}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700}
+.status::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.status.run{color:var(--green)} .status.wait{color:var(--amber)} .status.done{color:var(--blue)}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.tag{font-size:11px;font-weight:600;padding:3px 7px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);color:var(--muted)}
+
+/* progress */
+.progress-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+.overall{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:16px}
+.overall strong{font-size:28px;letter-spacing:-.03em;line-height:1}
+.overall p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+.bar{height:10px;background:var(--bg);border:1px solid var(--line);border-radius:999px;overflow:hidden;min-width:180px;flex:1}
+.bar i{display:block;height:100%;background:var(--green);border-radius:999px;transition:width .6s ease}
+.surface-row{padding:14px 0;border-top:1px solid var(--line2)}
+.surface-row:first-of-type{border-top:none;padding-top:2px}
+.surface-row:last-child{padding-bottom:2px}
+.surf-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.surf-head h3{margin:0;font-size:14.5px}
+.surf-head span{font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:700}
+.surf-desc{font-size:13px;color:var(--muted);margin:4px 0 8px;line-height:1.55}
+.surf-bar{height:8px;background:var(--bg);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.surf-bar i{display:block;height:100%;background:var(--text);opacity:.85}
+.surf-foot{display:flex;justify-content:space-between;gap:8px;margin-top:6px;font-size:12px;color:var(--muted)}
+.note{font-size:12.5px;color:var(--muted);background:var(--amber-bg);border:1px solid var(--amber-line);border-radius:12px;padding:10px 12px;margin-top:14px;line-height:1.55}
+.note b{color:var(--text)}
+
+/* timeline + checklist */
+.cols{display:grid;gap:14px}
+@media(min-width:860px){.cols{grid-template-columns:1.1fr .9fr}}
+.timeline{list-style:none;margin:0;padding:0;position:relative}
+.timeline::before{content:"";position:absolute;left:15px;top:8px;bottom:8px;width:2px;background:var(--line)}
+.timeline li{position:relative;padding:0 0 16px 44px}
+.timeline li:last-child{padding-bottom:0}
+.tl-dot{position:absolute;left:6px;top:2px;width:20px;height:20px;border-radius:50%;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center;font-size:11px;z-index:1}
+.tl-dot.done{background:var(--green);border-color:var(--green);color:#fff}
+.tl-dot.now{background:var(--amber-bg);border-color:var(--amber);color:var(--amber)}
+.timeline h4{margin:0;font-size:14px}
+.timeline p{margin:2px 0 0;font-size:13px;color:var(--muted);line-height:1.55}
+.timeline time{font-size:12px;font-weight:700;color:var(--muted);font-family:"JetBrains Mono",monospace}
+.checklist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.checklist li{display:flex;gap:10px;align-items:flex-start;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:11px 12px;font-size:13.5px}
+.checklist li.done{opacity:.85}
+.box{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--line);background:var(--surface);flex-shrink:0;display:grid;place-items:center;font-size:12px;margin-top:1px}
+li.done .box{background:var(--green);border-color:var(--green);color:#fff}
+.checklist small{display:block;color:var(--muted);font-size:12.5px;margin-top:1px;line-height:1.45}
+
+/* result */
+.result{margin-top:14px;background:#101613;color:#eef3ef;border-radius:18px;padding:20px;overflow:hidden;position:relative}
+@media(prefers-color-scheme:dark){.result{background:#171f1a;border:1px solid var(--line)}}
+.result h2{margin:0;font-size:18px;letter-spacing:-.02em}
+.result p{color:#a7b8ad;font-size:13.5px;line-height:1.6;margin:6px 0 0;max-width:640px}
+.result-grid{display:grid;gap:10px;margin-top:16px}
+@media(min-width:700px){.result-grid{grid-template-columns:repeat(3,1fr)}}
+.rbox{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:12px}
+.rbox label{font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;color:#8aa393;display:block}
+.rbox strong{font-size:16px;display:block;margin-top:4px}
+.rbox span{font-size:12.5px;color:#a7b8ad}
+.footer{margin-top:22px;display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--muted)}
+.footer a{font-weight:600}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topmeta">
+    <span class="live-badge"><span class="live-dot"></span> Build forge selesai • 120/120 checks • Skor 964/1.000</span>
+    <span class="snapshot">Diperbarui <b>19 Nov 2026 13:29 WIB</b> — diperbarui tiap milestone</span>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <h1>Semua agent Make.fun,<br><span>dalam satu pantauan.</span></h1>
+        <p>Status koneksi, siapa mengerjakan apa, progress build forge, skor conformance, sampai hasil submit — dirangkum untuk bounty yang sedang berjalan dan siap menampung bounty berikutnya. Per 13:29 WIB: build forge SELESAI — local runner kit meloloskan 120/120 checks dengan skor 964/1.000, semua modul ter-commit dan tree bersih. Submit masih menunggu repo GitHub.</p>
+      </div>
+      <div class="account-chip">
+        <div class="avatar">GO</div>
+        <div style="flex:1;min-width:0">
+          <strong>@gosumenep158b</strong>
+          <small>Make.fun • Terhubung</small>
+        </div>
+        <span class="pill pill-green">● Connected</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- KPI -->
+  <div class="kpis">
+    <div class="kpi">
+      <label>⏳ Deadline bounty aktif</label>
+      <strong style="font-size:15px;line-height:1.3">Sabtu, 21 Nov 2026<br>13:30 WIB</strong>
+      <div class="countdown" id="countdown" aria-live="polite">
+        <div class="cd-box"><b id="cd-d">--</b><span>Hari</span></div>
+        <div class="cd-box"><b id="cd-h">--</b><span>Jam</span></div>
+        <div class="cd-box"><b id="cd-m">--</b><span>Menit</span></div>
+        <div class="cd-box"><b id="cd-s">--</b><span>Detik</span></div>
+      </div>
+      <p id="cd-note">Menghitung mundur ke penutupan entry.</p>
+    </div>
+    <div class="kpi">
+      <label>Prize pool</label>
+      <strong>$500</strong>
+      <p>Juara 1: <b style="color:var(--text)">$100</b><br>Total hadiah bounty github-core-clone-01.</p>
+    </div>
+    <div class="kpi">
+      <label>Agent aktif</label>
+      <strong>5 <span style="font-size:14px;color:var(--muted);font-weight:600">agent</span></strong>
+      <p>1 koordinator + 4 worker.<br>Build tuntas — semua modul ter-commit, tree bersih.</p>
+    </div>
+    <div class="kpi">
+      <label>Kode ter-commit</label>
+      <strong class="mono">~6.170 <span style="font-size:13px;color:var(--muted)">baris</span></strong>
+      <p>Store, REST v3, GraphQL v4, MCP &amp; git smart HTTP.<br>Nol dependensi runtime.</p>
+    </div>
+    <div class="kpi">
+      <label>Skor conformance</label>
+      <strong class="mono">964 <span style="font-size:13px;color:var(--muted)">/ 1.000</span></strong>
+      <p>Run 1: 120/120 checks lolos<br>Run 2 (stabilitas): 957 — 120/120.</p>
+    </div>
+  </div>
+
+  <!-- CONNECTION + BOUNTY -->
+  <div class="grid2">
+    <section class="card" aria-labelledby="koneksi-title">
+      <div class="card-head">
+        <div>
+          <h2 id="koneksi-title"><i>🔗</i> Koneksi Akun</h2>
+          <p>Key agent Make.fun untuk entry atas nama Elvis.</p>
+        </div>
+        <span class="pill pill-green">Aktif</span>
+      </div>
+      <dl class="kv">
+        <dt>Akun</dt><dd class="mono">@gosumenep158b</dd>
+        <dt>Status</dt><dd>Terhubung — terkonfirmasi 19 Nov, 13:10 WIB</dd>
+        <dt>Key berlaku</dt><dd>Sampai 19 Des 2026</dd>
+        <dt>Session bundle</dt><dd>✅ 1 sesi Muse app terekam — bisa bersaing untuk tempat berbayar</dd>
+      </dl>
+      <div class="perms" aria-label="Permissions">
+        <span class="perm">enter</span><span class="perm">comment</span><span class="perm">bet</span><span class="perm">sponsor</span>
+      </div>
+      <div class="bounty-code">Path lokal: <b>~/workspace/makefun/forge</b> &nbsp;•&nbsp; Kit: <b>level 24</b> &nbsp;•&nbsp; Runtime: <b>Node 22</b> (bukan Node 24 sistem)</div>
+    </section>
+
+    <section class="card" aria-labelledby="bounty-title">
+      <div class="card-head">
+        <div>
+          <h2 id="bounty-title"><i>🏆</i> Bounty Berjalan</h2>
+          <p>Satu-satunya bounty Make.fun yang sedang diikuti saat snapshot ini dibuat.</p>
+        </div>
+        <span class="pill pill-green">● Build selesai</span>
+      </div>
+      <dl class="kv">
+        <dt>Nama</dt><dd>Build a GitHub-compatible git forge</dd>
+        <dt>Kode</dt><dd class="mono">github-core-clone-01</dd>
+        <dt>Bentuk entry</dt><dd>Single-process Node 22 server — nol dependensi runtime, tanpa binary <span class="mono">git</span> di trial</dd>
+        <dt>Yang dibangun</dt><dd>Git Smart HTTP v2, REST API v3, GraphQL v4, dan MCP dalam satu server</dd>
+        <dt>Modul selesai</dt><dd>✅ 5 / 5 — store, REST v3, GraphQL v4, MCP, git smart HTTP (semua ter-commit, tree bersih, ~6.170 baris)</dd>
+        <dt>Conformance</dt><dd>✅ 120/120 checks — Run 1 skor <b>964/1.000</b> (feature 600, agent/MCP 200, perf 164); Run 2 stabilitas 957/1.000 (perf 157)</dd>
+        <dt>Repo GitHub</dt><dd>⚠️ Pembuatan via integrasi GitHub App gagal (403 — tidak bisa membuat repo); sedang dibuat lewat browser dengan login tersimpan</dd>
+        <dt>Syarat submit</dt><dd>Repo GitHub publik + commit SHA 40 karakter + bundle transkrip sesi</dd>
+      </dl>
+    </section>
+  </div>
+
+  <!-- AGENTS -->
+  <section class="section" aria-labelledby="agents-title">
+    <div class="section-head">
+      <div>
+        <h2 id="agents-title">Tim Agent — Bounty Forge</h2>
+        <p>Build tuntas: keempat worker dan koordinator sudah selesai — 120/120 checks lolos di local runner. Fokus tim kini ke pembuatan repo GitHub dan submit.</p>
+      </div>
+      <div class="filters" role="group" aria-label="Filter agent">
+        <button class="filter-btn active" data-filter="all">Semua (5)</button>
+        <button class="filter-btn" data-filter="running">Sedang jalan</button>
+        <button class="filter-btn" data-filter="done">Selesai</button>
+        <button class="filter-btn" data-filter="coord">Koordinator</button>
+      </div>
+    </div>
+
+    <div class="agents" id="agentGrid">
+      <article class="agent coordinator" data-kind="coord running">
+        <div class="agent-top">
+          <div><div class="agent-role">Koordinator</div><h3>Coordinator — Forge Build</h3></div>
+          <span class="status run">Repo &amp; submit</span>
+        </div>
+        <p>Build selesai dan terverifikasi: integrasi <span class="mono">app.ts</span> tuntas, semua modul ter-commit, tree bersih. Local runner kit dua kali 120/120 (skor 964 &amp; 957). Kini mengurus repo GitHub — pembuatan via GitHub App gagal 403, dialihkan ke browser dengan login tersimpan — lalu push &amp; submit.</p>
+        <div class="tags"><span class="tag">Orkestrasi tim</span><span class="tag">Conformance ✓ 964</span><span class="tag">Repo GitHub</span></div>
+        <div class="agent-meta"><small>Fokus: repo publik &amp; submit entry</small><small class="mono">depth 1 • 1/1</small></div>
+      </article>
+
+      <article class="agent" data-kind="done">
+        <div class="agent-top">
+          <div><div class="agent-role">Worker 01 • Core</div><h3>Git Smart HTTP + Object Store</h3></div>
+          <span class="status done">Selesai ✓</span>
+        </div>
+        <p>Protocol git smart HTTP v2, penyimpanan objek (blob / tree / commit), refs, dan operasi push–fetch yang jadi fondasi forge. Dua modul ini — store &amp; git smart HTTP — sudah selesai dan ter-commit.</p>
+        <div class="tags"><span class="tag">smart HTTP v2</span><span class="tag">object store</span><span class="tag">refs</span><span class="tag">ter-commit</span></div>
+        <div class="agent-meta"><small>File: <span class="mono">src/store.ts</span></small><small>2 modul tuntas</small></div>
+      </article>
+
+      <article class="agent" data-kind="done">
+        <div class="agent-top">
+          <div><div class="agent-role">Worker 02 • API</div><h3>REST API v3</h3></div>
+          <span class="status done">Selesai ✓</span>
+        </div>
+        <p>Endpoint REST kompatibel GitHub v3: repos, issues, pulls, users, dan respons error yang sesuai spesifikasi conformance. Terverifikasi di runner: repos 15/15, issues 15/15, pulls 20/20.</p>
+        <div class="tags"><span class="tag">REST v3</span><span class="tag">repos</span><span class="tag">issues / PR</span><span class="tag">ter-commit</span></div>
+        <div class="agent-meta"><small>File: <span class="mono">src/rest.ts</span></small><small>Cek: checks-rest</small></div>
+      </article>
+
+      <article class="agent" data-kind="done">
+        <div class="agent-top">
+          <div><div class="agent-role">Worker 03 • API</div><h3>GraphQL v4</h3></div>
+          <span class="status done">Selesai ✓</span>
+        </div>
+        <p>Schema &amp; resolver GraphQL v4 agar query conformance lolos: node, repository, viewer, dan pagination sesuai kontrak kit. Terverifikasi di runner: graphql 20/20.</p>
+        <div class="tags"><span class="tag">GraphQL v4</span><span class="tag">schema</span><span class="tag">resolvers</span><span class="tag">ter-commit</span></div>
+        <div class="agent-meta"><small>Cek: checks-graphql</small><small>Modul tuntas</small></div>
+      </article>
+
+      <article class="agent" data-kind="done">
+        <div class="agent-top">
+          <div><div class="agent-role">Worker 04 • Integrasi</div><h3>MCP Server</h3></div>
+          <span class="status done">Selesai ✓</span>
+        </div>
+        <p>Tools MCP di dalam server yang sama — termasuk penamaan MCP server yang dipakai, yang wajib dicantumkan persis saat submit. Terverifikasi di runner: mcp 15/15, komponen agent/MCP penuh 200 poin.</p>
+        <div class="tags"><span class="tag">MCP</span><span class="tag">tools</span><span class="tag">src/mcp.ts</span><span class="tag">ter-commit</span></div>
+        <div class="agent-meta"><small>File: <span class="mono">src/mcp.ts</span></small><small>Cek: checks-mcp</small></div>
+      </article>
+
+      <article class="agent" data-kind="wait" style="border-style:dashed">
+        <div class="agent-top">
+          <div><div class="agent-role">Slot berikutnya</div><h3>Bounty Make.fun lain</h3></div>
+          <span class="status wait">Menunggu</span>
+        </div>
+        <p>Belum ada bounty lain yang diikuti. Begitu ada bounty baru yang di-enter sebagai @gosumenep158b, tim &amp; progress-nya akan muncul di dashboard ini.</p>
+        <div class="tags"><span class="tag">Siap ditambah</span></div>
+        <div class="agent-meta"><small>Cakupan: semua agent Make.fun</small><small>—</small></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- PROGRESS -->
+  <section class="section" aria-labelledby="progress-title">
+    <div class="section-head">
+      <div>
+        <h2 id="progress-title">Progress Build Forge</h2>
+        <p>Status terverifikasi per 19 Nov 2026, 13:29 WIB — dari local runner kit (<span class="mono">sdk/run.ts</span>, sealed suite, <span class="mono">--perf</span>).</p>
+      </div>
+      <span class="pill pill-green">Build selesai • 120/120 checks • 964/1.000</span>
+    </div>
+
+    <div class="progress-card">
+      <div class="overall">
+        <div>
+          <label style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)">Tahap keseluruhan</label>
+          <div style="display:flex;align-items:baseline;gap:8px;margin-top:4px"><strong>Fase Submit</strong><span style="color:var(--muted);font-size:13px">dari 4 fase: Setup → Build → Integrasi → Conformance &amp; Submit</span></div>
+          <p>Build &amp; conformance tuntas — <b style="color:var(--text)">~6.170 baris kode ter-commit, tree bersih, nol dependensi runtime</b>. Run 1: <b style="color:var(--text)">964/1.000</b> (feature 600 + agent/MCP 200 + perf 164). Run 2 stabilitas: 957/1.000 (perf 157), tetap 120/120. Sisa langkah: repo GitHub publik lalu submit.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:240px;max-width:420px">
+          <div class="bar" role="progressbar" aria-valuenow="96" aria-valuemin="0" aria-valuemax="100" aria-label="Skor conformance run 1"><i style="width:96.4%"></i></div>
+          <span class="mono" style="font-weight:700">964 / 1.000</span>
+        </div>
+      </div>
+
+      <div class="surface-row">
+        <div class="surf-head"><h3>Git + Protocol</h3><span style="color:var(--green)">30/30 • 5/5 ✓</span></div>
+        <p class="surf-desc">Object store (<span class="mono">src/store.ts</span>) dan git smart HTTP v2 — grup <b>git 30/30</b> dan <b>protocol 5/5</b> lolos penuh di sealed suite.</p>
+        <div class="surf-bar"><i style="width:100%;background:var(--green);opacity:1"></i></div>
+        <div class="surf-foot"><span>Grup: git + protocol</span><span>Semua modul ter-commit • tree bersih</span></div>
+      </div>
+      <div class="surface-row">
+        <div class="surf-head"><h3>REST API v3</h3><span style="color:var(--green)">50/50 ✓</span></div>
+        <p class="surf-desc">Endpoint &amp; bentuk respons di <span class="mono">src/rest.ts</span> — grup <b>repos 15/15</b>, <b>issues 15/15</b>, dan <b>pulls 20/20</b> lolos penuh.</p>
+        <div class="surf-bar"><i style="width:100%;background:var(--green);opacity:1"></i></div>
+        <div class="surf-foot"><span>Grup: repos + issues + pulls</span><span>Komponen feature penuh: 600 poin</span></div>
+      </div>
+      <div class="surface-row">
+        <div class="surf-head"><h3>GraphQL v4</h3><span style="color:var(--green)">20/20 ✓</span></div>
+        <p class="surf-desc">Schema &amp; resolver GraphQL v4 di atas store yang sama, mengikuti kontrak di kit level 24 — grup <b>graphql 20/20</b> lolos penuh.</p>
+        <div class="surf-bar"><i style="width:100%;background:var(--green);opacity:1"></i></div>
+        <div class="surf-foot"><span>Grup: graphql</span><span>Di atas store yang sama</span></div>
+      </div>
+      <div class="surface-row">
+        <div class="surf-head"><h3>MCP</h3><span style="color:var(--green)">15/15 ✓</span></div>
+        <p class="surf-desc">Tools MCP di <span class="mono">src/mcp.ts</span> — grup <b>mcp 15/15</b> lolos penuh; komponen agent/MCP meraih 200 poin penuh.</p>
+        <div class="surf-bar"><i style="width:100%;background:var(--green);opacity:1"></i></div>
+        <div class="surf-foot"><span>Grup: mcp</span><span>Agent/MCP: 200 / 200 poin</span></div>
+      </div>
+      <div class="surface-row">
+        <div class="surf-head"><h3>Performa (timed workloads)</h3><span style="color:var(--green)">164 • RUN 1</span></div>
+        <p class="surf-desc">Forge ini ~2,4× lebih cepat dari house reference forge: <span class="mono">perf_p50_us</span> <b>333.155</b> vs <b>805.899</b>. Run 1 meraih perf 164 poin; run 2 (stabilitas) 157 poin dengan checks tetap 120/120.</p>
+        <div class="surf-bar"><i style="width:82%;background:var(--green);opacity:1"></i></div>
+        <div class="surf-foot"><span>Run 1: 964/1.000 (perf 164)</span><span>Run 2: 957/1.000 (perf 157)</span></div>
+      </div>
+
+      <div class="note"><b>Skor ini dari local runner kit</b> (<span class="mono">sdk/run.ts</span>, sealed suite, flag <span class="mono">--perf</span>) — bukan tebakan: dua run penuh berturut-turut sama-sama <b>120/120 checks</b>. Rincian run 1: feature 600 + agent/MCP 200 + perf 164 = <b>964/1.000</b>. Skor resmi final tetap ditentukan penilaian bounty setelah entry di-submit.</div>
+    </div>
+  </section>
+
+  <!-- TIMELINE + CHECKLIST -->
+  <div class="cols section">
+    <section class="card" aria-labelledby="tl-title">
+      <div class="card-head"><div><h2 id="tl-title"><i>◷</i> Linimasa</h2><p>Dari persiapan sampai deadline.</p></div></div>
+      <ol class="timeline">
+        <li><span class="tl-dot done">✓</span><time>19 NOV • PAGI</time><h4>Kit &amp; runtime disiapkan</h4><p>Kit bounty diunduh (diperbarui ke level 24), Node 22.23.5 dipasang lokal karena Node sistem v24 tidak memenuhi syarat.</p></li>
+        <li><span class="tl-dot done">✓</span><time>19 NOV • 13:10 WIB</time><h4>Terhubung sebagai @gosumenep158b</h4><p>Login Make.fun disetujui. Key berlaku sampai 19 Des 2026 dengan permission enter / comment / bet / sponsor.</p></li>
+        <li><span class="tl-dot done">✓</span><time>19 NOV • SIANG</time><h4>Bundle sesi terverifikasi</h4><p>Bundler menemukan 1 sesi Muse app — entry memenuhi syarat untuk memperebutkan tempat berbayar, bukan handed-over entry.</p></li>
+        <li><span class="tl-dot done">✓</span><time>19 NOV • 13:26 WIB</time><h4>Kelima modul forge selesai &amp; ter-commit</h4><p>Store, REST v3, GraphQL v4, MCP, dan git smart HTTP tuntas dan ter-commit di <span class="mono">~/workspace/makefun/forge</span>.</p></li>
+        <li><span class="tl-dot done">✓</span><time>19 NOV • 13:29 WIB</time><h4>Build selesai — conformance 120/120, skor 964</h4><p>Local runner kit (sealed suite, --perf): run 1 = 120/120, skor 964/1.000 (feature 600, agent/MCP 200, perf 164); run 2 stabilitas = 120/120, skor 957. Semua grup penuh: git 30/30, repos 15/15, issues 15/15, pulls 20/20, graphql 20/20, mcp 15/15, protocol 5/5. ~2,4× lebih cepat dari house reference forge. Tree bersih, ~6.170 baris, nol dependensi runtime.</p></li>
+        <li><span class="tl-dot now">●</span><time>19 NOV • SEKARANG</time><h4>Repo GitHub dibuat lewat browser</h4><p>Pembuatan repo via integrasi GitHub App gagal (403 — integrasi tidak bisa membuat repo). Repo sedang dibuat lewat browser dengan login tersimpan, lalu kode di-push.</p></li>
+        <li><span class="tl-dot">○</span><time>SEBELUM 21 NOV • 13:30 WIB</time><h4>Push GitHub &amp; submit</h4><p>Repo publik, commit SHA, bundle transkrip, nama MCP server, dan baris usage dilampirkan — lalu entry dikirim.</p></li>
+      </ol>
+    </section>
+
+    <section class="card" aria-labelledby="check-title">
+      <div class="card-head"><div><h2 id="check-title"><i>✓</i> Checklist Submit</h2><p>Yang harus beres sebelum deadline. Dicentang dari laporan tim, bukan tebakan.</p></div><span class="pill pill-green">6 / 9 beres</span></div>
+      <ul class="checklist">
+        <li class="done"><span class="box">✓</span><div><strong>Akun terhubung</strong><small>@gosumenep158b — key sampai 19 Des 2026</small></div></li>
+        <li class="done"><span class="box">✓</span><div><strong>Kit level 24 + Node 22</strong><small>Starter forge ter-init di ~/workspace/makefun/forge</small></div></li>
+        <li class="done"><span class="box">✓</span><div><strong>Bundle sesi valid</strong><small>1 sesi terekam — eligible untuk hadiah</small></div></li>
+        <li class="done"><span class="box">✓</span><div><strong>5 modul forge selesai &amp; ter-commit</strong><small>Store, REST v3, GraphQL v4, MCP, git smart HTTP — ~6.170 baris, tree bersih, nol dependensi runtime</small></div></li>
+        <li class="done"><span class="box">✓</span><div><strong>Integrasi ke app.ts tuntas &amp; ter-commit</strong><small>Satu server utuh — termasuk dalam tree bersih final</small></div></li>
+        <li class="done"><span class="box">✓</span><div><strong>Conformance hijau — 120/120, skor 964/1.000</strong><small>Local runner kit, dua run: 964 (perf 164) &amp; 957 stabilitas (perf 157)</small></div></li>
+        <li><span class="box"></span><div><strong>Nama MCP server dicantumkan</strong><small>Atau nyatakan “none” secara eksplisit saat submit</small></div></li>
+        <li><span class="box"></span><div><strong>Usage rows dari session log dilampirkan</strong><small>Baris penggunaan dari log sesi agen</small></div></li>
+        <li><span class="box"></span><div><strong>Repo GitHub publik + SHA 40 karakter</strong><small>Via GitHub App gagal 403 — repo sedang dibuat lewat browser (login tersimpan), lalu push &amp; submit sebelum 21 Nov 13:30 WIB</small></div></li>
+      </ul>
+    </section>
+  </div>
+
+  <!-- RESULT -->
+  <section class="result" aria-labelledby="result-title">
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:flex-start">
+      <div>
+        <h2 id="result-title">Hasil &amp; Submit</h2>
+        <p>Build selesai dan terverifikasi lokal — entry BELUM di-submit. Local runner kit: run 1 skor 964/1.000 dan run 2 stabilitas 957/1.000, keduanya 120/120 checks. Yang tersisa: repo GitHub publik (pembuatan via GitHub App gagal 403; sedang dibuat lewat browser dengan login tersimpan), push, lalu submit sebelum deadline.</p>
+      </div>
+      <span class="pill" style="background:rgba(255,255,255,.1);color:#fde68a;border:1px solid rgba(255,255,255,.18)">BELUM SUBMIT</span>
+    </div>
+    <div class="result-grid">
+      <div class="rbox"><label>Skor conformance (lokal)</label><strong>964 / 1.000</strong><span>120/120 checks • Feature 600 + agent/MCP 200 + perf 164 • Run 2: 957</span></div>
+      <div class="rbox"><label>Kode ter-commit</label><strong>~6.170 baris</strong><span>Semua modul • Tree bersih • Nol dependensi runtime</span></div>
+      <div class="rbox"><label>Hadiah</label><strong>—</strong><span>Pool $500 • Juara 1 $100 • Menunggu submit &amp; penilaian</span></div>
+    </div>
+    <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px">
+      <a href="https://make.fun/bounty/github-core-clone-01" target="_blank" rel="noopener" style="background:#fff;color:#101613;padding:10px 14px;border-radius:10px;font-weight:700;font-size:13.5px;display:inline-flex;align-items:center;min-height:40px">Buka halaman bounty ↗</a>
+      <span style="border:1px solid rgba(255,255,255,.2);color:#d6e2d9;padding:10px 14px;border-radius:10px;font-size:13.5px;display:inline-flex;align-items:center;min-height:40px">Dashboard diperbarui Muse tiap milestone: build selesai ✓ → submit → hasil</span>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span>Dashboard Agent Make.fun • Akun <b style="color:var(--text)">@gosumenep158b</b> • Cakupan: semua agent &amp; bounty Make.fun Elvis</span>
+    <span>Snapshot statis — bukan data live. Diperbarui <b style="color:var(--text)">19 Nov 2026 13:29 WIB</b>.</span>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  // Deadline: Sabtu 21 Nov 2026 13:30 WIB (UTC+7)
+  var deadline = new Date('2026-11-21T13:30:00+07:00').getTime();
+  var dEl=document.getElementById('cd-d'),hEl=document.getElementById('cd-h'),mEl=document.getElementById('cd-m'),sEl=document.getElementById('cd-s'),note=document.getElementById('cd-note');
+  function pad(n){return String(n).padStart(2,'0')}
+  function tick(){
+    var diff = deadline - Date.now();
+    if(diff<=0){ dEl.textContent='00';hEl.textContent='00';mEl.textContent='00';sEl.textContent='00'; note.textContent='Deadline sudah lewat — menunggu hasil penilaian.'; return; }
+    var d=Math.floor(diff/86400000), h=Math.floor(diff%86400000/3600000), m=Math.floor(diff%3600000/60000), s=Math.floor(diff%60000/1000);
+    dEl.textContent=pad(d); hEl.textContent=pad(h); mEl.textContent=pad(m); sEl.textContent=pad(s);
+    if(d===0){ document.querySelectorAll('.cd-box').forEach(function(b){b.classList.add('urgent')}); note.textContent='Hari terakhir — kurang dari 24 jam ke penutupan entry.'; }
+    else if(d===1){ note.textContent='Sisa 1 hari lebih — repo GitHub & submit harus tuntas besok.'; }
+    else { note.textContent='Sisa '+d+' hari — build selesai (964/1.000), tinggal repo & submit.'; }
+  }
+  tick(); setInterval(tick,1000);
+
+  // Agent filter
+  var btns=document.querySelectorAll('.filter-btn');
+  var cards=document.querySelectorAll('#agentGrid .agent');
+  btns.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      btns.forEach(function(b){b.classList.remove('active')});
+      btn.classList.add('active');
+      var f=btn.getAttribute('data-filter');
+      cards.forEach(function(c){
+        var kinds=(c.getAttribute('data-kind')||'').split(' ');
+        var show = f==='all' || kinds.indexOf(f)!==-1 || (f==='running' && kinds.indexOf('running')!==-1);
+        // slot "bounty lain" only in "all"
+        if(c.querySelector('h3') && c.querySelector('h3').textContent.indexOf('Bounty Make.fun lain')!==-1){ show = (f==='all'); }
+        c.classList.toggle('hidden', !show);
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>
