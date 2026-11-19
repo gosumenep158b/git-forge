@@ -104,14 +104,15 @@ const TOOLS: ToolSpec[] = [
   },
 ];
 
-// Byte-stable listing: two tools/list answers must be identical, so this serializes once.
-const TOOLS_LIST_JSON = JSON.stringify({
-  tools: TOOLS.map((tool) => ({
+// Byte-stable listing: two tools/list answers must be identical, so the array serializes once
+// and every reply wraps it in the same JSON-RPC envelope for that request's id.
+const TOOLS_ARRAY_JSON = JSON.stringify(
+  TOOLS.map((tool) => ({
     name: tool.name,
     description: tool.description,
     inputSchema: { type: 'object', properties: tool.properties, required: tool.required },
   })),
-});
+);
 
 function textResult(value: unknown, isError = false): Json {
   const text = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
@@ -275,7 +276,8 @@ export function handleMcp(forge: Forge, ctx: Ctx, sessions: Set<string>): Reply 
     case 'notifications/initialized':
       return { status: 202, body: Buffer.alloc(0), headers };
     case 'tools/list': {
-      const body2 = Buffer.from(TOOLS_LIST_JSON);
+      // Same envelope shape as every other JSON-RPC answer, byte-stable across calls.
+      const body2 = Buffer.from(JSON.stringify({ jsonrpc: '2.0', id, result: JSON.parse(TOOLS_LIST_RESULT) }));
       return { status: 200, headers: { 'content-type': 'application/json; charset=utf-8', ...headers }, body: body2 };
     }
     case 'tools/call': {
