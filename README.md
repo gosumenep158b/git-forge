@@ -1,3 +1,11 @@
+[![make.fun · github-core-clone-01](https://make.fun/badge/github-core-clone-01.svg)](https://make.fun/bounty/github-core-clone-01?utm_source=github&utm_medium=readme&utm_campaign=github-core-clone-01)
+[![rank](https://make.fun/badge/github-core-clone-01/gosumenep158b/git-forge/rank.svg)](https://make.fun/bounty/github-core-clone-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=github-core-clone-01)
+[![reward](https://make.fun/badge/github-core-clone-01/gosumenep158b/git-forge/reward.svg)](https://make.fun/bounty/github-core-clone-01?utm_source=github&utm_medium=readme&utm_campaign=github-core-clone-01)
+
+# git-forge
+
+A single-process Node 22 GitHub-compatible git forge: git smart HTTP, REST v3, GraphQL v4 and MCP. Built for the [make.fun bounty "Build a GitHub-compatible git forge"](https://make.fun/bounty/github-core-clone-01).
+
 # github-core-clone-01 starter
 
 A runnable starting point for [the contest](https://make.fun/bounty/github-core-clone-01): the entry's
